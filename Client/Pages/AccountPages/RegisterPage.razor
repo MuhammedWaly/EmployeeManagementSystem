@@ -1,0 +1,88 @@
+﻿@page "/identity/account/Register"
+@using Client.Pages.OtherPages
+@layout AuthenticationLayout
+
+<RedirectTheAuthenticatedUsres />
+
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <EditForm Model="@User" OnValidSubmit="HandleRegister">
+                <DataAnnotationsValidator />
+
+                <section class="vh-100">
+                    <div class="registration-form">
+                        <div class="form-icon">
+
+                            <i class="icon icon-user ">
+                                <span></span>
+                            </i>
+
+                        </div>
+
+                        <div class="form-group">
+                            <InputText @bind-Value="User.FullName" class="form-control item" id="username" placeholder="Full name"></InputText>
+                        </div>
+
+                        <div class="form-group">
+                            <InputText @bind-Value="User.Email" class="form-control item" id="email" placeholder="Email"></InputText>
+                        </div>
+
+                        <div class="form-group">
+                            <InputText @bind-Value="User.Password" type="password" class="form-control item" id="password" placeholder="Password"></InputText>
+                        </div>
+
+                        <div class="form-group">
+                            <InputText @bind-Value="User.ConfirmPassword" type="password" class="form-control item" id="confirm-password" placeholder="Confirm Password"></InputText>
+                        </div>
+                        <div class="justify-content-center" style="text-align:center;">
+                            @if (ShowLoadingButton)
+                            {
+                                <ButtonLoadingSpinner></ButtonLoadingSpinner>
+                            }
+                            else
+                            {
+                                <button type="submit" class=" justify-content-between btn btn-block create-account">Register</button>
+                            }
+
+                        </div>
+                        <div class="card-footer" style="background: none;margin-top: 34px;">
+                            <span class="text-center">
+                                Already have an account ? <a class="btn-link" href="/identity/account/Login">Login</a>
+                            </span>
+                            <ValidationSummary />
+                        </div>
+                    </div>
+                </section>
+
+            </EditForm>
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    public bool ShowLoadingButton { get; set; } = false;
+    Register User = new();
+
+
+
+    async Task HandleRegister()
+    {
+        ShowLoadingButton = true;
+        var result = await accountService.CreateASync(User);
+        if (result.falg)
+        {
+            User = new();
+        }
+        else
+        {
+
+        }
+        ShowLoadingButton = false;
+    }
+
+}
+

@@ -1,0 +1,20 @@
+﻿
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationStateProvider { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider;
+        var user = authState.User;
+
+        if (user.Identity != null )
+        {
+            NavigationManager.NavigateTo("/");
+        }
+       
+         
+    }
+}
+

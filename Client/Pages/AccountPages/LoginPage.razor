@@ -1,0 +1,179 @@
+﻿@page "/identity/account/Login"
+@using Client.Pages.OtherPages
+@using Syncfusion.Blazor.Popups
+@layout AuthenticationLayout
+
+<RedirectTheAuthenticatedUsres/>
+
+
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <EditForm Model="@User" OnValidSubmit="HandleLogin">
+                <DataAnnotationsValidator />
+               
+                <section class="vh-100">
+                    <div class="registration-form">
+                        <div class="form-icon">
+                           
+                            <i class="icon icon-user ">
+                                <span></span>
+                            </i>
+
+                        </div>
+
+                        <div class="form-group">
+                            <InputText @bind-Value="User.Email" class="form-control item" id="email" placeholder="Email"></InputText>
+                        </div>
+
+                        <div class="form-group">
+                            <InputText @bind-Value="User.Password" type="password" class="form-control item" id="password" placeholder="Password"></InputText>
+                        </div>
+                        <div class="justify-content-center" style="text-align:center;">
+                            @if(ShowLoadingButton)
+                            {
+                                <ButtonLoadingSpinner></ButtonLoadingSpinner>
+                            }
+                            else
+                            {
+                                <button type="submit" class=" justify-content-between btn btn-block create-account">Login</button>
+                            }
+                            
+                        </div>
+                        <div class="card-footer" style="background: none;margin-top: 34px;">
+                            <span class="text-center">
+                                Don't have an account ? <a class="btn-link" href="/identity/account/Register">Sign Up</a>
+                            </span>
+                            <ValidationSummary/>
+                        </div>
+                    </div>
+                </section>
+
+            </EditForm>
+
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+
+    public bool ShowLoadingButton { get; set; } = false;
+    Login User = new();
+
+    async Task HandleLogin()
+    {
+        ShowLoadingButton = true;
+        var result = await accountService.LoginASync(User);
+        if (result.flag)
+        {
+            
+            var CustomAuthstateprovider = (CustomAuthenticationSatateProviders)AuthStateProvider;
+            await CustomAuthstateprovider.UpdateAuthenticationState(new UserSession() { Token = result.Token, RefreshToken = result.RefreshToken });
+            NavManager.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            ShowLoadingButton = false;
+        }
+
+       
+    }
+}
+<style>
+    body {
+        background-color: #dee9ff;
+    }
+
+    .registration-form {
+        padding: 189px 0;
+        position: relative;
+    }
+
+        .registration-form form {
+            background-color: #fff;
+            max-width: 600px;
+            margin: auto;
+            padding: 50px 70px;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.075);
+        }
+
+        .registration-form .form-icon {
+            position: absolute; /* Add this line */
+            top: -100px; /* Adjust the top position as needed */
+            left: 50%; /* Adjust the left position as needed */
+            transform: translateX(-50%); /* Center the icon horizontally */
+            background: url('Images/BackgroundImages/kisspng-cartoon-finger-thumb-clip-art-employee-5ac82ebf215cb0.0197707315230686071367.png') no-repeat center center fixed;
+            text-align: center;
+            margin-top: 61px;
+            background-size: cover;
+            border-radius: 100%;
+            font-size: 80px;
+            color: white;
+            width: 200px;
+            height: 200px;
+            line-height: 200px;
+            padding-top: 204px;
+        }
+
+        .registration-form .item {
+            border-radius: 20px;
+            margin-bottom: 25px;
+            padding: 10px 20px;
+        }
+
+    .create-account {
+        border-radius: 30px;
+        padding: 10px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        background-color: crimson;
+        border: none;
+        color: white;
+    }
+
+    .registration-form .social-media {
+        max-width: 600px;
+        background-color: #fff;
+        margin: auto;
+        padding: 35px 0;
+        text-align: center;
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+        color: #9fadca;
+        border-top: 1px solid #dee9ff;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.075);
+    }
+
+    .registration-form .social-icons {
+        margin-top: 30px;
+        margin-bottom: 16px;
+    }
+
+        .registration-form .social-icons a {
+            font-size: 23px;
+            margin: 0 3px;
+            color: #5691ff;
+            border: 1px solid;
+            border-radius: 50%;
+            width: 45px;
+            display: inline-block;
+            height: 45px;
+            text-align: center;
+            background-color: #fff;
+            line-height: 45px;
+        }
+
+            .registration-form .social-icons a:hover {
+                text-decoration: none;
+                opacity: 0.6;
+            }
+
+</style>
+
+
+
+

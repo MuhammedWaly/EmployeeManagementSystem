@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\OtherPages\RedirectTheAuthenticatedUsres.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Pages\AccountPages\LoginPage.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="23.1.36" />
+    <PackageReference Include="Syncfusion.Blazor.Popups" Version="23.1.36" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="23.1.36" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj" />
+    <ProjectReference Include="..\ClientLibrary\ClientLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\OtherPages\RedirectTheAuthenticatedUsres.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\OtherPages\ProfileDropdown.razor" />
+    <_ContentIncludedByDefault Remove="Pages\OtherPages\RedirectTheAuthenticatedUsres.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Pages\AccountPages\LoginPage.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\OtherPages\ProfileDropDown.razor" />
+    <None Include="Pages\RedirectTheAuthenticatedUsres.razor" />
+  </ItemGroup>
+	<ItemGroup>
+		<Content Update="Layout\MainLayout.razor">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Pages\OtherPages\ProfileDropdown.razor" />
+	</ItemGroup>
+
+</Project>
