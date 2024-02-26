@@ -7,6 +7,8 @@ using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BaseLibrary.Entities;
+using Server.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +47,13 @@ builder.Services.AddAuthentication(op =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSection.Key!))
     };
 });
+
+builder.Services.AddScoped<IGenericReposaitory<GeneralDepartment>, GeneralDepartmentReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<Town>, TownReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<Country>, CountryReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<Department>, DepartmentReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<City>, CityReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<Branch>, BranchReposaitory>();
 
 builder.Services.AddCors(op =>
 {

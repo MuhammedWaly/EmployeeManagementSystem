@@ -1,0 +1,104 @@
+﻿@using Syncfusion.Blazor.DropDowns
+
+
+
+<SfDialog Width="250px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible">
+    <DialogEvents OnOpen="ShowDialog"> </DialogEvents>
+    
+    <DialogTemplates>
+        <Header>@Title Department</Header>
+        <Content> 
+        <EditForm Model="Department" Enhance OnSubmit="Save">
+            <div class="card border-success">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Id</label>
+                        <input @bind="Department.Id" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <InputText @bind-Value="Department.Name" class="form-control"></InputText>
+                    </div>
+                    
+                    <div class="form-group mt-3 mb-3">
+                        <label class="form-label">Select General Department</label>
+                        
+                        @if(Department.GeneralDepartment is not null)
+                        {
+                                string selected = Department.GeneralDepartment!.Name;
+                                <SfDropDownList TValue="string" TItem="GeneralDepartment" Placeholder="@selected" DataSource="GeneralDepartments">
+                                    <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                                    <DropDownListEvents TValue="string" TItem="GeneralDepartment" ValueChange="OnValueChange"></DropDownListEvents>
+                                </SfDropDownList>
+
+                        }
+                        else
+                        {
+                            <SfDropDownList TValue="string" TItem="GeneralDepartment" Placeholder="Select General Department" DataSource="GeneralDepartments">
+                                <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                                <DropDownListEvents TValue="string" TItem="GeneralDepartment" ValueChange="OnValueChange"></DropDownListEvents>
+                            </SfDropDownList>
+                        }
+                        
+                    </div>
+                </div>
+
+            </div>
+
+        </EditForm>    
+        </Content>
+    </DialogTemplates>
+
+    <DialogButtons>
+        <DialogButton Content="Save" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save"></DialogButton>
+    </DialogButtons>
+
+</SfDialog>
+
+
+
+@code {
+
+    [Parameter] public Department Department { get; set; } = new();
+    [Parameter] public EventCallback<Department> HandleSaveEvent { get; set; }
+    [Parameter] public List<GeneralDepartment> GeneralDepartments { get; set; } = new();
+
+    public bool IsVisible { get; set; } = false;
+    public string Title { get; set; } = "Add";
+
+
+    public void ShowDialog()
+    {
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+   
+
+    private async Task Save()
+    {
+        if (string.IsNullOrWhiteSpace(Department.Name) || Department.GeneralDepartmentId <= 0)
+        {
+            await dialugeSer.AlertAsync("You must provide a Department Name", "Alert!");
+            return;
+        }
+        else
+        {
+            await HandleSaveEvent.InvokeAsync(Department);
+        }
+
+        // Save logic goes here
+
+        IsVisible = false;
+    }
+    public void ChangeTitle(string title)
+    {
+        Title = title;
+    }
+
+    public void OnValueChange(ChangeEventArgs<string, GeneralDepartment> args)
+    {
+        Department.GeneralDepartmentId = int.Parse(args.Value);
+    }
+
+}

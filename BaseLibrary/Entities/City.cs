@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace BaseLibrary.Entities
 {
-    public class Town : BaseEntity
+    public class City : BaseEntity
     {
-        public City? City { get; set; }
-        public int CityId {  get; set; }
-
+        public Country? Country { get; set; }
+        public int CountryId {  get; set; }
         [JsonIgnore]
-        public List<Employee>? Employees { get; set; }
+        public List<Town>? Towns {  get; set; }
     }
 }

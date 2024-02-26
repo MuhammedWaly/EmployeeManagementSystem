@@ -1,0 +1,175 @@
+﻿@implements IDisposable
+
+
+@if (AllState.ShowDepartment)
+{
+    <div class="continer mt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="float-start">General Department</h4>
+                        <button class="btn btn-outline-success float-end" @onclick="AddButtonClicked"><i class="bi bi-plus-circle"> Add Department</i></button>
+                    </div>
+                    <div class="card-header" style="max-height:580px; overflow-x:hidden; overflow-y:scroll">
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">General Department</th>
+                                        <th scope="col">Department</th>
+                                        <th scope="col">Action</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Departments is not null)
+                                    {
+                                        int count = 1;
+                                        foreach (var item in Departments)
+                                        {
+
+
+                                            <tr>
+                                                <th scope="row">@count</th>
+                                                <td>@item.GeneralDepartment!.Name</td>
+                                                <td>@item.Name</td>
+                                                <td>
+                                                    <i class=" bi bi-pencil text-info" id="cursorStyle" @onclick="()=>EditClicked(item)"></i>
+
+                                                    <i class=" bi bi-trash text-danger" id="cursorStyle" @onclick="()=>DeleteClicked(item)"></i>
+
+                                                </td>
+                                            </tr>
+                                            count++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="4">
+                                                <div class="alert alert-info text-center">No Department Added</div>
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+}
+
+<DepartmentDialoge @ref= "departmentdialouge" HandleSaveEvent="HandleSaveEvent"
+                           Department="Department"
+                           GeneralDepartments="GeneralDepartments" />
+
+<style>
+    .CoursorStyke {
+        cursor: pointer;
+    }
+</style>
+
+
+@code {
+    DepartmentDialoge? departmentdialouge;
+    Department Department = new();
+    public string Title { get; set; } = "Add";
+    public List<GeneralDepartment> GeneralDepartments { get; set; } = new();
+    public List<Department> Departments { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetDepartments();
+        await GetGeneralDepartment();
+        AllState.Action += StateHasChanged;
+    }
+
+    private async Task GetGeneralDepartment()
+    {
+        GeneralDepartments = await generalDepartmentService.GetAll(Constants.GeneralDepartment);
+    }
+    private async Task GetDepartments()
+    {
+        Departments = await DepartmentService.GetAll(Constants.Department);
+    }
+
+    public void Dispose()
+    {
+        AllState.Action -= StateHasChanged;
+    }
+
+    void OpenDialouge()
+    {
+        departmentdialouge?.ShowDialog();
+    }
+
+    public async Task HandleSaveEvent(Department Department)
+    {
+        bool SuccessCheck = false;
+
+        if (Department.Id > 0)
+        {
+            var response = await DepartmentService.Update(Department, Constants.Department);
+            SuccessCheck = await DisplayMessage(response.falg, response.Messaage);
+        }
+        else
+        {
+            var response = await DepartmentService.Insert(Department, Constants.Department);
+            SuccessCheck = await DisplayMessage(response.falg, response.Messaage);
+        }
+        if (SuccessCheck)
+        {
+            Department = new();
+            await GetDepartments();
+            departmentdialouge?.ChangeTitle("Add");
+        }
+    }
+
+    void AddButtonClicked()
+    {
+        departmentdialouge?.ChangeTitle("Add");
+        Department = new();
+        OpenDialouge();
+    }
+
+    private async Task DeleteClicked(Department dep)
+    {
+        bool confirm = await dialugeSer.ConfirmAsync($"Are you sure you wanna delete {dep.Name} Department", "Confirm delete");
+        if (!confirm)
+            return;
+        var response = await DepartmentService.Delete(dep.Id, Constants.Department);
+        if (await DisplayMessage(response.falg, response.Messaage))
+            await GetDepartments();
+
+    }
+
+    private void EditClicked(Department dep)
+    {
+        departmentdialouge?.ChangeTitle("Update");
+        Department = dep;
+        OpenDialouge();
+    }
+
+    public async Task<bool> DisplayMessage(bool flag, string message)
+    {
+        if (flag)
+        {
+            await dialugeSer.AlertAsync(message, "Success operation");
+            return true;
+        }
+        else
+        {
+            await dialugeSer.AlertAsync(message, "Alert!");
+            return false;
+        }
+    }
+}

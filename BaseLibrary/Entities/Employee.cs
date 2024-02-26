@@ -1,41 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BaseLibrary.Entities
 {
-    public class Employee 
+    public class Employee :BaseEntity
     {
-        public int Id { get; set; }
-
-        public string? Name { get; set; }
-
-        public string? CivilId {  get; set; }
-
-        public string? FileNumber {  get; set; }
-
-        public string? FullName {  get; set; }
-
-        public string? JobNAme {  get; set; }
-
-        public string? Address {  get; set; }
-
-        public string? TelephoneNumber {  get; set; }
-
-        public string? Photo {  get; set; }
-
-        public string? Other {  get; set; }
+        [Required]
+        public string CivilId { get; set; } = string.Empty;
+        [Required]
+        public string FileNumber {  get; set; } = string.Empty;
+        [Required]
+        public string FullName {  get; set; } = string.Empty;
+        [Required]
+        public string JobNAme {  get; set; } = string.Empty;
+        [Required]
+        public string Address { get; set; } = string.Empty;
+        [Required,DataType(DataType.PhoneNumber)]
+        public string TelephoneNumber { get; set; } = string.Empty;
+        [Required]
+        public string Photo {  get; set; } = string.Empty;
+        [Required]
+        public string Other { get; set; } = string.Empty;
 
 
 
 
-        public GeneralDepartment? GeneralDepartment {  get; set; }
-        public int? GeneralDepartmentId {  get; set; }
-
-        public Department? Department { get; set; }
-        public int? DepartmentId { get; set; }
+       
 
         public Branch? Branch {  get; set; }
         public int? BranchId { get; set;}
