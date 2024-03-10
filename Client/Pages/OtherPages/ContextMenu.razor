@@ -1,0 +1,84 @@
+﻿<SfDialog Width="100px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible">
+    <DialogEvents OnOpen="OpenContextMenu"> </DialogEvents>
+
+    <DialogTemplates>
+        <Header>Employee Menu</Header>
+        <Content>
+
+            <div class="hstack gap-2 mb-2 cursorstyle" @onclick="ViewClicked">
+                <i class="bi bi-eye text-info"></i>
+                <span class="text-info cursorstyle">View</span>
+            </div>
+
+            <div class="hstack gap-2 mb-2 cursorstyle" @onclick="EditClicked">
+                <i class="bi bi-pencil text-info"></i>
+                <span class="text-primary cursorstyle">Edit</span>
+            </div>
+
+            <div class="hstack gap-2 mb-2 cursorstyle" @onclick="DeleteClicked">
+                <i class="bi bi-trash text-danger"></i>
+                <span class="text-danger cursorstyle">Delete</span>
+            </div>
+
+            <div class="hstack gap-2 mb-2 cursorstyle" @onclick="AddVacation">
+                <i class="bi bi-backpack3 text-success"></i>
+                <span class="text-success cursorstyle">Add Vacation</span>
+            </div>
+
+            <div class="hstack gap-2 mb-2 cursorstyle" @onclick="AddOvertimeClicked">
+                <i class="bi bi-stopwatch text-danger"></i>
+                <span class="text-danger cursorstyle">Add OverTime</span>
+            </div>
+            
+            <div class="hstack gap-2 mb-2 cursorstyle" @onclick="AddHealthClicked">
+                <i class="bi bi-hospital text-warning"></i>
+                <span class="text-warning cursorstyle">Add Health</span>
+            </div>
+            
+            <div class="hstack gap-2 mb-2 cursorstyle" @onclick="AddSancationClicked">
+                <i class="bi bi-x-octagon text-info"></i>
+                <span class="text-info cursorstyle">Add Sancation</span>
+            </div>
+
+        </Content>
+    </DialogTemplates>
+</SfDialog>
+
+@code {
+    SfDialog? openDialog;
+    private bool IsVisible { get; set; } = false;
+
+    [Parameter] public EventCallback HandleViewClicked { get; set; }
+    private async Task ViewClicked() => await HandleViewClicked.InvokeAsync();
+
+    [Parameter] public EventCallback HandleEditClicked { get; set; }
+    private async Task EditClicked() => await HandleEditClicked.InvokeAsync();
+
+    [Parameter] public EventCallback HandleDeleteClicked { get; set; }
+    private async Task DeleteClicked() => await HandleDeleteClicked.InvokeAsync();
+
+    [Parameter] public EventCallback HandleAddVacation { get; set; }
+    private async Task AddVacation() => await HandleAddVacation.InvokeAsync();
+
+    [Parameter] public EventCallback HandleAddOvertimeClicked { get; set; }
+    private async Task AddOvertimeClicked() => await HandleAddOvertimeClicked.InvokeAsync();
+
+    [Parameter] public EventCallback HandleAddHealthClicked { get; set; }
+    private async Task AddHealthClicked() => await HandleAddHealthClicked.InvokeAsync();
+
+    [Parameter] public EventCallback HandleAddSancationClicked { get; set; }
+    private async Task AddSancationClicked() => await HandleAddSancationClicked.InvokeAsync();
+
+    public void OpenContextMenu()
+    {
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    public void CloseContextMenu()
+    {
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+}

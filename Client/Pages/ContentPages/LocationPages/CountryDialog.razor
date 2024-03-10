@@ -1,0 +1,78 @@
+﻿
+
+
+<SfDialog Width="250px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible">
+    <DialogEvents OnOpen="ShowDialog"> </DialogEvents>
+
+    <DialogTemplates>
+        <Header>@Title Country</Header>
+        <Content>
+            <EditForm Model="Country" Enhance OnSubmit="Save">
+                 <div class="card border-success">
+                     <div class="card-body">
+                         <div class="form-group">
+                             <label class="form-label">Id</label>
+                             <input @bind="Country.Id" class="form-control" disabled />
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Name</label>
+                             <InputText @bind-Value="Country.Name" class="form-control"></InputText>
+                         </div>
+
+                        
+                    </div>
+
+                </div>
+
+            </EditForm>
+        </Content>
+    </DialogTemplates>
+
+    <DialogButtons>
+        <DialogButton Content="Save" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save"></DialogButton>
+    </DialogButtons>
+
+</SfDialog>
+
+
+@code {
+
+    [Parameter] public Country Country { get; set; } = new();
+    [Parameter] public EventCallback<Country> HandleSaveEvent { get; set; }
+    
+
+    public bool IsVisible { get; set; } = false;
+    public string Title { get; set; } = "Add";
+
+
+    public void ShowDialog()
+    {
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+
+
+    private async void Save()
+    {
+        if (string.IsNullOrWhiteSpace(Country.Name))
+        {
+            await dialugeSer.AlertAsync("You must provide a Country Name", "Alert!");
+            return;
+        }
+        else
+        {
+            await HandleSaveEvent.InvokeAsync(Country);
+        }
+
+        // Save logic goes here
+
+        IsVisible = false;
+    }
+    public void ChangeTitle(string title)
+    {
+        Title = title;
+    }
+
+    
+}

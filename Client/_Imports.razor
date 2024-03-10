@@ -10,7 +10,7 @@
 @using Microsoft.JSInterop
 @using Client
 @using Client.Layout
-
+@using Syncfusion.Blazor.DropDowns
 @using ClientLibrary.Services.Contracts
 @using BaseLibrary.Dtos
 @using ClientLibrary.Helpers
@@ -18,6 +18,7 @@
 @using Syncfusion.Blazor.Popups
 @using Client.Pages.ContentPages.DepartmentPages
 @using Client.Pages.OtherPages
+@using Client.Pages.DoctorPages
 
 
 @inject SfDialogService dialugeSer
@@ -33,3 +34,8 @@
 @inject IGenericReposaitory<City> cityservice
 @inject IGenericReposaitory<Town> townservice
 @inject IGenericReposaitory<Employee> employeeservice
+@inject IGenericReposaitory<Doctor> doctorService
+@inject IGenericReposaitory<Sanction> sanctionService
+@inject IGenericReposaitory<SanctionType> sanctionTypeService
+@inject IGenericReposaitory<Vacation> vacationService
+@inject IGenericReposaitory<VacationType> vacationTypeService

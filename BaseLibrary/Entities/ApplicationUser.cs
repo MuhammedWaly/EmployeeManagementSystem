@@ -17,5 +17,6 @@ namespace BaseLibrary.Entities
         public string? password { get; set; }
 
 
+
     }
 }

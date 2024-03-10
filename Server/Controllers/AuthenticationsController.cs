@@ -38,6 +38,33 @@ namespace Server.Controllers
             if (Token == null) return BadRequest("Model is not found");
             var result = await _userAccount.RefreshTokenAsync(Token);
             return Ok(result);
+        }  
+        
+        [HttpGet("Users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            return Ok(await _userAccount.GetUsers());
+        } 
+
+        [HttpGet("Roles")]
+        public async Task<IActionResult> GetAllRoles()
+        {
+            return Ok(await _userAccount.GetRoles());
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateUSer(ManageUsers user)
+        {
+            var result = await _userAccount.Update(user);
+            return Ok(result);
+        }
+
+        [HttpDelete("Delete/{Id}")]
+        public async Task<IActionResult> Deleteuser(int id)
+        {
+            if (id <= 0) return BadRequest();
+            var result = await _userAccount.Delete(id); 
+            return Ok(result);
         }
     }
 }

@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="float-start">General Department</h4>
-                        <button class="btn btn-outline-success float-end" @onclick="OpenDialouge"><i class="bi bi-plus-circle"> Add Department</i></button>
+                        <button class="btn btn-outline-success float-end" @onclick="OpenDialouge"><i class="bi bi-plus-circle"> Add General Department</i></button>
                     </div>
                     <div class="card-header" style = "max-height:580px; overflow-x:hidden; overflow-y:scroll">
                         <div class="card-body">
@@ -36,14 +36,15 @@
                                                 <th scope="row">@count</th>
                                                 <td>@item.Name</td>
                                                 <td>
-                                                    <i class=" bi bi-pencil text-info" id="cursorStyle" @onclick="()=>EditClicked(item)"></i>
+                                                    <i class=" bi bi-pencil text-info" id="CursorStyle" @onclick="()=>EditClicked(item)"></i>
 
-                                                    <i class=" bi bi-trash text-danger" id="cursorStyle" @onclick="()=>DeleteClicked(item)"></i>
+                                                    <i class=" bi bi-trash text-danger" id="CursorStyle" @onclick="()=>DeleteClicked(item)"></i>
                                                    
                                                 </td>
                                                 
 
                                             </tr>
+                                            count++;
                                         }
                                     }
                                     else
@@ -72,7 +73,7 @@
                            GeneralDepartment="GeneralDepartment" />
 
 <style>
-    .CoursorStyke{
+    .CursorStyle {
 cursor :pointer;
     }
 </style>

@@ -28,7 +28,7 @@ namespace ServerLibrary.Reposaitories.Implementions
             if (user == null) return new GeneralResponse(false, " Model is Empty");
 
             var CheckUser = await FindUserByEmailAsync(user.Email);
-            if (CheckUser != null) return new GeneralResponse(false,"User is already Regitered");
+            if (CheckUser != null) return new GeneralResponse(false, "User is already Regitered");
 
             var applicationUser = await AddToDatabase(new ApplicationUser()
             {
@@ -38,21 +38,21 @@ namespace ServerLibrary.Reposaitories.Implementions
 
             });
 
-            var CheckAdmin = await _context.SystemRoles.FirstOrDefaultAsync(R=>R.Name!.Equals(Constants.Admin));
+            var CheckAdmin = await _context.SystemRoles.FirstOrDefaultAsync(R => R.Name!.Equals(Constants.Admin));
 
             if (CheckAdmin is null)
             {
                 var CreateAdminRole = await AddToDatabase(new SystemRole() { Name = Constants.Admin });
-                 await AddToDatabase(new UserRole() { RoleId = CreateAdminRole.Id, UserId = applicationUser.Id});
+                await AddToDatabase(new UserRole() { RoleId = CreateAdminRole.Id, UserId = applicationUser.Id });
                 return new GeneralResponse(true, "Account Created");
             }
             var CheckUserRole = await _context.SystemRoles.FirstOrDefaultAsync(R => R.Name!.Equals(Constants.User));
             SystemRole response = new();
-            if(CheckUserRole is null)
+            if (CheckUserRole is null)
             {
                 var Reponse = await AddToDatabase(new SystemRole() { Name = Constants.User });
                 await AddToDatabase(new UserRole() { RoleId = response.Id, UserId = applicationUser.Id });
-                
+
             }
             else
             {
@@ -73,7 +73,7 @@ namespace ServerLibrary.Reposaitories.Implementions
 
             if (!BCrypt.Net.BCrypt.Verify(user.Password, applicationUser.password)) return new LoginResponse(false, "Email or Password is not valid");
 
-            var GetUserRole =await FindUserRoleAsync(applicationUser.Id);
+            var GetUserRole = await FindUserRoleAsync(applicationUser.Id);
             if (GetUserRole is null) return new LoginResponse(false, "No user Role");
 
             var GetRoleName = await FindRoleNameAsync(GetUserRole.RoleId);
@@ -83,18 +83,18 @@ namespace ServerLibrary.Reposaitories.Implementions
             string RefreshToken = GenerateRefreshToken();
 
             var findUser = await _context.RefreshTokenInfos.FirstOrDefaultAsync(u => u.Id == applicationUser.Id);
-            if(findUser is not null)
+            if (findUser is not null)
             {
                 findUser.Token = RefreshToken;
                 await _context.SaveChangesAsync();
             }
             else
             {
-                await AddToDatabase(new RefreshTokenInfos() { Token = RefreshToken, UserId = applicationUser.Id});
+                await AddToDatabase(new RefreshTokenInfos() { Token = RefreshToken, UserId = applicationUser.Id });
             }
 
 
-            return new LoginResponse(true,"Login Successfully",JwtToken, RefreshToken);
+            return new LoginResponse(true, "Login Successfully", JwtToken, RefreshToken);
         }
 
         private string GenerateRefreshToken()
@@ -114,28 +114,28 @@ namespace ServerLibrary.Reposaitories.Implementions
                 new Claim(ClaimTypes.Role,Rolename)
             };
             var token = new JwtSecurityToken(
-                issuer:config.Value.Issuer,
-                audience:config.Value.Audience,
-                claims:userClaims,
-                expires:DateTime.Now.AddDays(1),
-                signingCredentials:creditinail
+                issuer: config.Value.Issuer,
+                audience: config.Value.Audience,
+                claims: userClaims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creditinail
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private async Task<T> AddToDatabase<T>(T Model)
         {
-            var result =  _context.Add(Model);
+            var result = _context.Add(Model);
             await _context.SaveChangesAsync();
-            return (T) result.Entity;
+            return (T)result.Entity;
         }
 
         private async Task<ApplicationUser> FindUserByEmailAsync(string email) =>
            await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Email!.ToLower()!.Equals(email!.ToLower()));
-        
+
         private async Task<UserRole> FindUserRoleAsync(int userID) =>
-           await _context.UserRoles.FirstOrDefaultAsync(u => u.Id == userID); 
-        
+           await _context.UserRoles.FirstOrDefaultAsync(u => u.Id == userID);
+
         private async Task<SystemRole> FindRoleNameAsync(int RoleID) =>
            await _context.SystemRoles.FirstOrDefaultAsync(u => u.Id == RoleID);
 
@@ -162,5 +162,67 @@ namespace ServerLibrary.Reposaitories.Implementions
             await _context.SaveChangesAsync();
             return new LoginResponse(true, "Token Refreshed Successfully", JwtToken, RefreshToken);
         }
+
+
+
+        public async Task<List<ManageUsers>> GetUsers()
+        {
+            var allUsers = await GetApplicationUsers();
+            var allRoles = await GetAllRoles();
+            var userRoles = await GetAllUserRoles();
+            if (allRoles.Count == 0 || allUsers.Count == 0) return null;
+
+            var users = new List<ManageUsers>();
+            foreach (var user in allUsers)
+            {
+                var userRole = userRoles.FirstOrDefault(u => u.UserId == user.Id);
+                var rolename = allRoles.FirstOrDefault(u => u.Id == userRole.RoleId);
+                users.Add(new ManageUsers()
+                {
+                    UserId = user.Id, Name = user.FullName, Role = rolename.Name, Email = user.Email
+                });
+            }
+            return users;
+        }
+
+        
+
+        public async Task<GeneralResponse> Update(ManageUsers user)
+        {
+            var getrole = (await GetAllRoles()).FirstOrDefault(r => r.Name.Equals(user.Role));
+            var userrole = await _context.UserRoles.FirstOrDefaultAsync(r => r.UserId == user.UserId);
+            userrole.RoleId = getrole.Id;
+           await _context.SaveChangesAsync();
+            return new GeneralResponse(true, "Role Updated Successfully");
+        }
+
+        public async Task<GeneralResponse> Delete(int Id)
+        {
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == Id);
+            _context.ApplicationUsers.Remove(user);
+            return new GeneralResponse(true, "User Deleted Successfully");
+        }
+
+        public async Task<List<SystemRole>> GetRoles()
+        {
+           return await GetAllRoles();
+        }
+
+
+        private async Task<List<UserRole>> GetAllUserRoles()
+        {
+            return await _context.UserRoles.AsNoTracking().ToListAsync();
+        }
+
+        private async Task<List<SystemRole>> GetAllRoles()
+        {
+            return await _context.SystemRoles.AsNoTracking().ToListAsync();
+        }
+
+        private async Task<List<ApplicationUser>> GetApplicationUsers()
+        {
+            return await _context.ApplicationUsers.AsNoTracking().ToListAsync();
+        }
+
     }
 }

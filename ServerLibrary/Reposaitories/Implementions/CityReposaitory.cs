@@ -22,7 +22,7 @@ namespace ServerLibrary.Reposaitories.Implementions
 
         public async Task<List<City>> GetAllAsync()
         {
-            return await _context.Cities.ToListAsync();
+            return await _context.Cities.AsNoTracking().Include(c=>c.Country).ToListAsync();
 
         }
 

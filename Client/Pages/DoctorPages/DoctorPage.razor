@@ -1,0 +1,155 @@
+﻿@using Syncfusion.Blazor.Grids
+
+
+@if (AllState.ShowHealth)
+{
+
+    <div class="continer mt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="float-start">Health Information</h4>
+
+                    </div>
+                    <div class="card-header" style="max-height:580px; overflow-x:hidden; overflow-y:scroll">
+                        <div class="card-body">
+                            @{
+                                var tool = (new List<string>() { "Search", "ExcelExport", "PdfExport", "Print" });
+                            }
+                            <SfGrid DataSource="@Doctors" AllowPaging="true" AllowSorting="true" Toolbar="@tool" AllowExcelExport="true" @ref="Defultgrid" AllowPdfExport="true">
+                                <GridPageSettings PageSize="5"></GridPageSettings>
+                                <GridEvents OnToolbarClick="ToolbarClickedHandler" TValue="Doctor"></GridEvents>
+                                <GridColumns>
+                                    <GridColumn HeaderText="Employee Image">
+                                        <Template>
+                                            @{
+                                                var Employee = (context as Employee);
+                                                <div>
+                                                    <img src="@Employee.Photo" alt="@Employee.Name" width="150" height="150" />
+                                                </div>
+                                            }
+                                        </Template>
+                                    </GridColumn>
+                                    <GridColumn Field="@nameof(Doctor.Id)" HeaderText="Id"></GridColumn>
+                                    <GridColumn Field="@nameof(Doctor.MidicalRecommendation)" HeaderText="Recommendation"></GridColumn>
+                                    <GridColumn Field="@nameof(Doctor.MidicalDiagnose)" HeaderText="Midical Diagnose"></GridColumn>
+                                    <GridColumn Field="@nameof(Doctor.Date)" HeaderText="Date"></GridColumn>
+
+                                    <GridColumn HeaderText="Action">
+                                        <Template>
+                                            @{
+                                                var employee = (context as Doctor);
+                                                <div>
+
+                                                    <i class="bi bi-pencil text-primary cursorstyle" @onclick="()=>EditClicked(employee)"></i>
+                                                    <i class="bi bi-trash text-danger cursorstyle" @onclick="()=>DeleteClicked(employee)"></i>
+                                                </div>
+                                            }
+                                        </Template>
+                                    </GridColumn>
+
+                                </GridColumns>
+                            </SfGrid>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+
+
+
+
+
+
+<DoctorDialog @ref="Doctordialog" HandleSaveOperationEvent="HandleSaveOperationEvent" Doctor="Doctor" />
+
+@code {
+    private SfGrid<Doctor>? Defultgrid;
+    DoctorDialog? Doctordialog;
+    Doctor Doctor = new();
+    public List<Doctor> Doctors { get; set; } = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await GetHealth();
+        AllState.Action += StateHasChanged;
+    }
+
+    private async Task GetHealth()
+    {
+        Doctors = await doctorService.GetAll(Constants.Doctor);
+    }
+
+    void AddButtonClick()
+    {
+        Doctor = new();
+        OpenDialog();
+    }
+    void OpenDialog() => Doctordialog.OpenDialog();
+
+    async Task HandleSaveOperationEvent(Doctor item)
+    {
+
+        var result = await doctorService.Update(item, Constants.Doctor);
+        var successCheck = await DisplayMessage(result.falg, result.Messaage);
+        if (successCheck)
+        {
+
+            Doctor = new();
+            await GetHealth();
+        }
+    }
+
+    private void EditClicked(Doctor item)
+    {
+        Doctor = item;
+        OpenDialog();
+    }
+
+    private async Task DeleteClicked(Doctor item)
+    {
+        bool confirm = await dialugeSer.ConfirmAsync($"Are you sure you wanna delete this ? ", "Confirm delete");
+        if (!confirm)
+            return;
+        var response = await employeeservice.Delete(item.Id, Constants.Doctor);
+        if (await DisplayMessage(response.falg, response.Messaage))
+        {
+            await GetHealth();
+        }
+    }
+
+
+
+    public async Task<bool> DisplayMessage(bool flag, string message)
+    {
+        if (flag)
+        {
+            await dialugeSer.AlertAsync(message, "Success operation");
+            return true;
+        }
+        else
+        {
+            await dialugeSer.AlertAsync(message, "Alert!");
+            return false;
+        }
+    }
+
+    public void Dispose() => AllState.Action -= StateHasChanged;
+
+    public async Task ToolbarClickedHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Text == "Excel Export")
+            await this.Defultgrid!.ExcelExport()!;
+
+        if (args.Item.Text == "Pdf Export")
+            await this.Defultgrid!.PdfExport()!;
+    }
+}

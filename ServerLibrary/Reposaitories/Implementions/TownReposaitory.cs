@@ -22,7 +22,7 @@ namespace ServerLibrary.Reposaitories.Implementions
 
         public async Task<List<Town>> GetAllAsync()
         {
-            return await _context.Towns.ToListAsync();
+            return await _context.Towns.AsNoTracking().Include(c=>c.City).ToListAsync();
 
         }
 
@@ -34,7 +34,7 @@ namespace ServerLibrary.Reposaitories.Implementions
 
         public async Task<GeneralResponse> Insert(Town item)
         {
-            if (!await CheckName(item.Name)) return new GeneralResponse(false, "Towns already added");
+            if (!await CheckName(item.Name)) return new GeneralResponse(false, "Town already added");
             _context.Towns.Add(item);
             await Commit();
             return Success();

@@ -1,4 +1,5 @@
 ﻿using BaseLibrary.Dtos;
+using BaseLibrary.Entities;
 using BaseLibrary.Responses;
 using ClientLibrary.Helpers;
 using ClientLibrary.Services.Contracts;
@@ -24,6 +25,8 @@ namespace ClientLibrary.Services.Implementions
             return await result.Content.ReadFromJsonAsync<GeneralResponse>()!;
         }
 
+        
+
         public async Task<LoginResponse> LoginASync(Login user)
         {
             var httpClient = getHttpClient.GetPublicHttpClient();
@@ -40,6 +43,40 @@ namespace ClientLibrary.Services.Implementions
             if (!result.IsSuccessStatusCode) return new LoginResponse(false, "Error occured");
 
             return await result.Content.ReadFromJsonAsync<LoginResponse>()!;
+        }
+
+
+        public async Task<GeneralResponse> Delete(int Id)
+        {
+            var httpClient = getHttpClient.GetPublicHttpClient();
+            var result = await httpClient.DeleteAsync($"{AuthUrl}/Delete/{Id}");
+            if (!result.IsSuccessStatusCode) return new GeneralResponse(false, "Error occured");
+
+            return await result.Content.ReadFromJsonAsync<GeneralResponse>()!;
+        }
+
+        public async Task<List<SystemRole>> GetRoles()
+        {
+            var httpClient = getHttpClient.GetPublicHttpClient();
+            var result = await httpClient.GetFromJsonAsync<List<SystemRole>>($"{AuthUrl}/Roles");
+            return result;
+        }
+
+        public async Task<List<ManageUsers>> GetUsers()
+        {
+            var httpClient = getHttpClient.GetPublicHttpClient();
+            var result = await httpClient.GetFromJsonAsync<List<ManageUsers>>($"{AuthUrl}/Users");
+            return result;
+        }
+
+
+        public async Task<GeneralResponse> Update(ManageUsers user)
+        {
+            var httpClient = getHttpClient.GetPublicHttpClient();
+            var result = await httpClient.PutAsJsonAsync($"{AuthUrl}/update", user);
+            if (!result.IsSuccessStatusCode) return new GeneralResponse(false, "Error occured");
+
+            return await result.Content.ReadFromJsonAsync<GeneralResponse>()!;
         }
     }
 }

@@ -1,0 +1,164 @@
+﻿@implements IDisposable
+
+
+@if (AllState.ShowUser)
+{
+    <div class="continer mt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="float-start">Users</h4>
+                       
+                    </div>
+                    <div class="card-header" style="max-height:580px; overflow-x:hidden; overflow-y:scroll">
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Role</th>
+                                        <th scope="col">Action</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ManageUsers is not null)
+                                    {
+                                        int count = 1;
+                                        foreach (var item in ManageUsers)
+                                        {
+
+
+                                            <tr>
+                                                <th scope="row">@count</th>
+                                                <th scope="row">@item.UserId</th>
+                                                <td>@item.Name</td>
+                                                <td>@item.Email</td>
+                                                <td>@item.Role</td>
+                                                <td>
+                                                    <i class=" bi bi-pencil text-info CoursorStyle" @onclick="()=>EditClicked(item)"></i>
+
+                                                    <i class=" bi bi-trash text-danger CoursorStyle" @onclick="()=>DeleteClicked(item)"></i>
+
+                                                </td>
+                                            </tr>
+                                            count++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="4">
+                                                <div class="alert alert-info text-center">No Users</div>
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+}
+
+<UserDialoge @ref="UserDialoge" HandleSaveEvent="HandleSaveEvent"
+             ManageUsers="ManageUser"
+             SystemRoles="SystemRoles" />
+
+<style>
+    .CoursorStyle {
+        cursor: pointer;
+    }
+</style>
+
+
+@code {
+    UserDialoge? UserDialoge;
+    ManageUsers ManageUser = new();
+    public string Title { get; set; } = "Add";
+    public List<ManageUsers> ManageUsers { get; set; } = new();
+    public List<SystemRole> SystemRoles { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUsers();
+        await GetRoles();
+        AllState.Action += StateHasChanged;
+    }
+
+    private async Task GetUsers()
+    {
+        ManageUsers = await accountService.GetUsers();
+    }
+    private async Task GetRoles()
+    {
+        SystemRoles = await accountService.GetRoles();
+    }
+
+    public void Dispose()
+    {
+        AllState.Action -= StateHasChanged;
+    }
+
+    void OpenDialouge()
+    {
+        UserDialoge?.ShowDialog();
+    }
+
+    public async Task HandleSaveEvent(ManageUsers manageUser)
+    {
+        var response = await accountService.Update(manageUser);
+        bool SuccessCheck = await DisplayMessage(response.falg, response.Messaage); ;
+
+        if (SuccessCheck)
+        {
+            ManageUser = new();
+            await GetUsers();
+           
+        }
+    }
+
+
+    private async Task DeleteClicked(ManageUsers manageUser)
+    {
+        bool confirm = await dialugeSer.ConfirmAsync($"Are you sure you wanna delete {manageUser.Name} ", "Confirm delete");
+        if (!confirm)
+            return;
+        var response = await accountService.Delete(manageUser.UserId);
+        if (await DisplayMessage(response.falg, response.Messaage))
+            await GetUsers();
+
+    }
+
+    private void EditClicked(ManageUsers manageUser)
+    {
+        
+        ManageUser = manageUser;
+        OpenDialouge();
+    }
+
+    public async Task<bool> DisplayMessage(bool flag, string message)
+    {
+        if (flag)
+        {
+            await dialugeSer.AlertAsync(message, "Success operation");
+            return true;
+        }
+        else
+        {
+            await dialugeSer.AlertAsync(message, "Alert!");
+            return false;
+        }
+    }
+}

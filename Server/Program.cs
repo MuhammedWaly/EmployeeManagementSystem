@@ -54,6 +54,14 @@ builder.Services.AddScoped<IGenericReposaitory<Country>, CountryReposaitory>();
 builder.Services.AddScoped<IGenericReposaitory<Department>, DepartmentReposaitory>();
 builder.Services.AddScoped<IGenericReposaitory<City>, CityReposaitory>();
 builder.Services.AddScoped<IGenericReposaitory<Branch>, BranchReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<Employee>, EmployeeReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<Doctor>, DoctorReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<Vacation>, VacationReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<VacationType>, VacationTypeReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<Sanction>, SanctionRepsaitory>();
+builder.Services.AddScoped<IGenericReposaitory<SanctionType>, SancationTypeReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<Overtime>, OvertimeReposaitory>();
+builder.Services.AddScoped<IGenericReposaitory<OvertimeType>, OvertimeTypeReposaitory>();
 
 builder.Services.AddCors(op =>
 {

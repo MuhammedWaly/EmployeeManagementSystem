@@ -16,9 +16,9 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">General Department</th>
+                                        <th scope="col"></th>
                                         <th scope="col">Department</th>
+                                        <th scope="col">General Department</th>
                                         <th scope="col">Action</th>
 
                                     </tr>
@@ -33,12 +33,12 @@
 
                                             <tr>
                                                 <th scope="row">@count</th>
-                                                <td>@item.GeneralDepartment!.Name</td>
                                                 <td>@item.Name</td>
+                                                <td>@item.GeneralDepartment!.Name</td>
                                                 <td>
-                                                    <i class=" bi bi-pencil text-info" id="cursorStyle" @onclick="()=>EditClicked(item)"></i>
+                                                    <i class=" bi bi-pencil text-info" id="CursorStyle" @onclick="()=>EditClicked(item)"></i>
 
-                                                    <i class=" bi bi-trash text-danger" id="cursorStyle" @onclick="()=>DeleteClicked(item)"></i>
+                                                    <i class=" bi bi-trash text-danger" id="CursorStyle" @onclick="()=>DeleteClicked(item)"></i>
 
                                                 </td>
                                             </tr>
@@ -73,7 +73,7 @@
                            GeneralDepartments="GeneralDepartments" />
 
 <style>
-    .CoursorStyke {
+    .CoursorStyle {
         cursor: pointer;
     }
 </style>

@@ -15,5 +15,12 @@ namespace ClientLibrary.Helpers
         public const string city = "api/City";
         public const string Town = "api/Town";
         public const string Employee = "api/Employee";
+        public const string Doctor = "api/Doctor";
+        public const string Vacations = "api/Vacations";
+        public const string VacationsType = "api/VacationsType";
+        public const string SanctionType = "api/SanctionType";
+        public const string Sanctions = "api/Sanctions";
+        public const string Overtimes = "api/Overtimes";
+        public const string OvertimeTypes = "api/OvertimeTypes";
     }
 }

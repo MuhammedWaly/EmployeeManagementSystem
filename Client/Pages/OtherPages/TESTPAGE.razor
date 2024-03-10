@@ -1,0 +1,118 @@
+﻿
+
+
+
+
+
+
+
+
+
+
+
+
+@* <EditForm Enhance Model="@EmployeeGroup2" OnInvalidSubmit="form2">
+     <DataAnnotationsValidator />
+
+     <div class="row">
+         <div class="col-lg-2"></div>
+         <div class="col-lg-4">
+             <div class="card-title mb-5 fw-bold" style="font-family:Tahoma;">Job Information</div>
+             <div class="card-body">
+                 <div class="form-group">
+                     <label class="form-label">Job name</label>
+                     <input type="text" value="@EmployeeGroup2.JobName" class="form-control" />
+
+                 </div>
+
+                 <div class="form-group mt-3">
+                     <label class="form-label">Select General Department</label>
+                     <select class="form-control">
+                         @foreach (var department in GeneralDepartments)
+                        {
+                            <option value="@department.Id">@department.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label class="form-label">Select Department</label>
+                    <select class="form-control">
+                        @foreach (var department in Departments)
+                        {
+                            <option value="@department.Id">@department.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label class="form-label">Select Branch</label>
+                    <select class="form-control">
+                        @foreach (var branch in Branches)
+                        {
+                            <option value="@branch.Id">@branch.Name</option>
+                        }
+                    </select>
+
+                </div>
+
+                <div class="card-footer" style="background: none;margin-top: 34px;">
+                    <button class="btn btn-primary float-start mt-4 mb-5" type="button" @onclick="PrevClicked">
+                        <i class="bi bi-arrow-left"></i>
+                        Prev
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card-title mb-5 fw-bold" style="font-family:Tahoma;">Location Information</div>
+            <div class="card-body">
+                <div class="form-group mt-3">
+                    <label class="form-label">Select Country</label>
+                    <select class="form-control">
+                        @foreach (var country in Countries)
+                        {
+                            <option value="@country.Id">@country.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label class="form-label">Select City</label>
+                    <select class="form-control">
+                        @foreach (var city in Cities)
+                        {
+                            <option value="@city.Id">@city.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label class="form-label">Select Town</label>
+                    <select class="form-control">
+                        @foreach (var town in Towns)
+                        {
+                            <option value="@town.Id">@town.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group mt-3" style="background: none;margin-top: 34px;">
+                    <label class="form-label">Other</label>
+                    <textarea class="form-control" @bind="EmployeeGroup2.Other"></textarea>
+                </div>
+
+                <div class="form-group mt-4 mb-5">
+                    <button class="btn btn-success float-end mt-4 mb-5" type="submit">
+                        <i class="bi bi-save"></i>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-2"></div>
+    </div>
+
+</EditForm> *@
