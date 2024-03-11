@@ -36,6 +36,13 @@ builder.Services.AddScoped<IGenericReposaitory<City>,GenericReposaitory<City>>()
 builder.Services.AddScoped<IGenericReposaitory<Town>,GenericReposaitory<Town>>();
 
 builder.Services.AddScoped<IGenericReposaitory<Employee>,GenericReposaitory<Employee>>();
+builder.Services.AddScoped<IGenericReposaitory<Vacation>,GenericReposaitory<Vacation>>();
+builder.Services.AddScoped<IGenericReposaitory<VacationType>,GenericReposaitory<VacationType>>();
+builder.Services.AddScoped<IGenericReposaitory<Doctor>,GenericReposaitory<Doctor>>();
+builder.Services.AddScoped<IGenericReposaitory<Sanction>,GenericReposaitory<Sanction>>();
+builder.Services.AddScoped<IGenericReposaitory<SanctionType>,GenericReposaitory<SanctionType>>();
+builder.Services.AddScoped<IGenericReposaitory<Overtime>,GenericReposaitory<Overtime>>();
+builder.Services.AddScoped<IGenericReposaitory<OvertimeType>,GenericReposaitory<OvertimeType>>();
 
 
 builder.Services.AddScoped<AllStates>();
