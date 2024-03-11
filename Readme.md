@@ -6,6 +6,7 @@
   - .NET 8
   - Entity Framework Core
   - Identity and JWT for Authentication and Authorization
+    
  **Frontend:**
   - Blazor WASM
 
