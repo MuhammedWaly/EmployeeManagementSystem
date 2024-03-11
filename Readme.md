@@ -10,8 +10,7 @@
  **Frontend:**
   - Blazor WASM
 
-
-- **Development Environment:**
+ **Development Environment:**
   - Visual Studio 2022
 
   ## Getting Started 
